@@ -17,9 +17,11 @@ typedef struct List{
   Node *tail;
 } List;
 
-void insertNodeAtTail(List*, char **);
-void printList(List*, int);
-//void printlistTailToHead();
+void insertNodeAtTail(List *, char **);
+void printList(List *, int);
+void sortList(List *);
+void swapAdjNodes(List **, Node **, Node **);
+void destroyList(List **);
 // void insertNodeAtHead();
 
 int main(int argc, char *argv[]) {
@@ -29,13 +31,13 @@ int main(int argc, char *argv[]) {
   }
 
   List firstFileLinkedList;
-  List secondFileLinkedList;
+  //List secondFileLinkedList;
 
   firstFileLinkedList.head = NULL;
   firstFileLinkedList.tail = NULL;
 
-  secondFileLinkedList.head = NULL;
-  secondFileLinkedList.tail = NULL;
+  // secondFileLinkedList.head = NULL;
+  // secondFileLinkedList.tail = NULL;
 
   FILE *fPtr1;
   FILE *fPtr2;
@@ -60,7 +62,11 @@ int main(int argc, char *argv[]) {
     insertNodeAtTail(&firstFileLinkedList, &scannedWord);
   }
 
+  sortList(&firstFileLinkedList);
   printList(&firstFileLinkedList, 0);
+  destroyList(&firstFileLinkedList);
+  // destroyList(&secondFiledLinkedList);
+
 
   fclose(fPtr1);
   fclose(fPtr2);
@@ -118,12 +124,13 @@ void insertNodeAtTail(List *firstFileLinkedList, char **scannedWord) {
   }
 
 
-  printf("values are %s \n", wordToInsert);
+  // printf("values are %s \n", wordToInsert);
 
   free(*scannedWord);
 }
 
-void printList(List *list, int reverse){
+void printList(List *list, int reverse) {
+
   Node *currentNode = NULL;
 
   if (!reverse) {
@@ -149,4 +156,75 @@ void printList(List *list, int reverse){
 
   }
 
+}
+
+void swapAdjNodes(List **unsortedList, Node **nodeOne, Node **nodeTwo) {
+
+  Node *tempNode = NULL;
+
+  tempNode = (*nodeOne)->prev;
+
+  if(tempNode != NULL) {
+    tempNode->next = (*nodeTwo);
+    (*nodeTwo)->prev = tempNode;
+    (*nodeOne)->next = (*nodeTwo)->next;
+    (*nodeTwo)->next = (*nodeOne);
+  } else {
+    (*nodeTwo)->prev = tempNode;
+    (*nodeOne)->next = (*nodeTwo)->next;
+    (*nodeTwo)->next = (*nodeOne);
+    (*unsortedList)->head = (*nodeTwo);
+  }
+
+  tempNode = (*nodeOne)->next;
+
+  if(tempNode != NULL) {
+    tempNode->prev = (*nodeOne);
+    (*nodeOne)->prev = (*nodeTwo);
+  } else {
+    (*nodeOne)->prev = (*nodeTwo);
+    (*unsortedList)->tail = (*nodeOne);
+  }
+
+}
+
+void sortList(List *unsortedList) {
+
+  Node *marker = NULL;
+  Node *markerPrev = NULL;
+  Node *compareNode = NULL;
+  Node *originalSwap = NULL;
+
+  markerPrev = unsortedList->head;
+  marker = unsortedList->head->next;  
+
+  while(marker != NULL && markerPrev != NULL) {
+
+    if (strcmp(markerPrev->word, marker->word) < 0) {
+      marker = marker->next;
+      markerPrev = markerPrev->next;
+
+    } else { 
+
+      swapAdjNodes(&unsortedList, &markerPrev, &marker);
+
+      originalSwap = marker;
+      marker = markerPrev->next;
+      compareNode = originalSwap->prev;
+      
+      while(compareNode != NULL && originalSwap != NULL && (strcmp(compareNode->word, originalSwap->word) > 0)) {
+       
+        swapAdjNodes(&unsortedList, &compareNode, &originalSwap);
+        compareNode = originalSwap->prev;
+      }
+
+      if (marker != NULL)
+        markerPrev = marker->prev;
+    }
+  }
+
+}
+
+void destroyList(List **listToDestroy) {
+  
 }

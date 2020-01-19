@@ -1,0 +1,68 @@
+display markerPrev->word
+display markerPrev->next->word
+display markerPrev->next->next->word
+display markerPrev->next->next->next->word
+display markerPrev->next->next->next->next->word
+
+display marker->word
+display marker->next->word
+display marker->next->next->word
+display marker->next->next->next->word
+display marker->next->next->next->next->word
+
+////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////
+p markerPrev->word
+p markerPrev->next->word
+p markerPrev->next->next->word
+p markerPrev->next->next->next->word
+p markerPrev->next->next->next->next->word
+
+p marker->word
+p marker->next->word
+p marker->next->next->word
+p marker->next->next->next->word
+p marker->next->next->next->next->word
+
+////////////////////////////////////////////////////
+///////////////////////////////////////////////////
+
+display (*unsortedList)->head->word
+display (*unsortedList)->head->next->word
+display (*unsortedList)->head->next->next->word
+display (*unsortedList)->head->next->next->next->word
+display (*unsortedList)->head->next->next->next->next->word
+display (*unsortedList)->head->next->next->next->next->next->word
+
+///////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
+
+display tempNode->prev->word
+display tempNode->word
+display tempNode->next->word
+
+display nodeOne->prev->word
+display nodeOne->word
+display nodeOne->next->word
+
+display nodeTwo->prev->word
+display nodeTwo->word
+display nodeTwo->next->word
+
+////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////
+
+p tempNode->prev->word
+p tempNode->word
+p tempNode->next->word
+
+p nodeOne->prev->word
+p nodeOne->word
+p nodeOne->next->word
+
+p nodeTwo->prev->word
+p nodeTwo->word
+p nodeTwo->next->word
+
+
+THEGODFATHER.txt THEGODFATHER2.txt correct.txt
