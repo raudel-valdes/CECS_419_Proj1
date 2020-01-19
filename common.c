@@ -89,7 +89,6 @@ void insertNodeAtTail(List *firstFileList, char **scannedWord) {
   nextTailNode->count = 1;
 
   Node *currentNode = firstFileList->head;
-  // Node *currentHeadNode = firstFileList->head;
   Node *currentTailNode = firstFileList->tail;
 
   if (currentNode == NULL) {
