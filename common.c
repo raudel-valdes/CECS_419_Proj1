@@ -21,7 +21,7 @@ void insertNodeAtTail(List *, char **);
 void printList(List *, int);
 void sortList(List *);
 void swapAdjNodes(List **, Node **, Node **);
-void destroyList(List **);
+void destroyList(List *);
 // void insertNodeAtHead();
 
 int main(int argc, char *argv[]) {
@@ -30,14 +30,14 @@ int main(int argc, char *argv[]) {
     exit(EXIT_FAILURE);
   }
 
-  List firstFileLinkedList;
-  //List secondFileLinkedList;
+  List firstFileList;
+  List secondFileList;
 
-  firstFileLinkedList.head = NULL;
-  firstFileLinkedList.tail = NULL;
+  firstFileList.head = NULL;
+  firstFileList.tail = NULL;
 
-  // secondFileLinkedList.head = NULL;
-  // secondFileLinkedList.tail = NULL;
+  secondFileList.head = NULL;
+  secondFileList.tail = NULL;
 
   FILE *fPtr1;
   FILE *fPtr2;
@@ -59,13 +59,18 @@ int main(int argc, char *argv[]) {
   }
 
   while(fscanf(fPtr1,"%ms", &scannedWord) != EOF) {
-    insertNodeAtTail(&firstFileLinkedList, &scannedWord);
+    insertNodeAtTail(&firstFileList, &scannedWord);
   }
 
-  sortList(&firstFileLinkedList);
-  printList(&firstFileLinkedList, 0);
-  destroyList(&firstFileLinkedList);
-  // destroyList(&secondFiledLinkedList);
+  while(fscanf(fPtr2,"%ms", &scannedWord) != EOF) {
+    insertNodeAtTail(&secondFileList, &scannedWord);
+  }
+  
+  sortList(&firstFileList);
+  //printList(&firstFileList, 0);
+
+  destroyList(&firstFileList);
+  destroyList(&secondFileList);
 
 
   fclose(fPtr1);
@@ -75,27 +80,25 @@ int main(int argc, char *argv[]) {
   return 0;
 }
 
-void insertNodeAtTail(List *firstFileLinkedList, char **scannedWord) {
+void insertNodeAtTail(List *firstFileList, char **scannedWord) {
 
   char * wordToInsert = strndup(*scannedWord, strlen(*scannedWord));
   Node *nextTailNode = malloc(sizeof(Node));
 
-  //could I use strndup?? Do I need to do a +1?
-  //Do I even need to do malloc again?
   nextTailNode->word = wordToInsert;
   nextTailNode->count = 1;
 
-  Node *currentNode = firstFileLinkedList->head;
-  // Node *currentHeadNode = firstFileLinkedList->head;
-  Node *currentTailNode = firstFileLinkedList->tail;
+  Node *currentNode = firstFileList->head;
+  // Node *currentHeadNode = firstFileList->head;
+  Node *currentTailNode = firstFileList->tail;
 
   if (currentNode == NULL) {
 
     nextTailNode->prev = NULL;
     nextTailNode->next = NULL;
 
-    firstFileLinkedList->head = nextTailNode;
-    firstFileLinkedList->tail = nextTailNode;
+    firstFileList->head = nextTailNode;
+    firstFileList->tail = nextTailNode;
 
   } else {
  
@@ -104,27 +107,27 @@ void insertNodeAtTail(List *firstFileLinkedList, char **scannedWord) {
       if (strcmp(currentNode->word, wordToInsert) == 0) {
 
         currentNode->count++;
+
+        free(nextTailNode->word);
+        free(nextTailNode);
+
         break;
         
-      } else {
+      } else 
         currentNode = currentNode->next;
-      }
 
       if (currentNode == NULL) {
 
         nextTailNode->prev = currentTailNode;
         nextTailNode->next = NULL;
         currentTailNode->next = nextTailNode;
-        firstFileLinkedList->tail = nextTailNode;
+        firstFileList->tail = nextTailNode;
 
       }
 
     }
   
   }
-
-
-  // printf("values are %s \n", wordToInsert);
 
   free(*scannedWord);
 }
@@ -225,6 +228,18 @@ void sortList(List *unsortedList) {
 
 }
 
-void destroyList(List **listToDestroy) {
-  
+void destroyList(List *listToDestroy) {
+  Node *nodeToDestroy = NULL;
+  Node *tempNode = NULL;
+
+  nodeToDestroy = listToDestroy->head;
+    
+    while (nodeToDestroy != NULL) {
+      tempNode = nodeToDestroy->next;
+
+      free(nodeToDestroy->word);
+      free(nodeToDestroy);
+
+      nodeToDestroy = tempNode;
+    }
 }
