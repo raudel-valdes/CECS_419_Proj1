@@ -22,7 +22,6 @@ void sortList(List *);
 void swapAdjNodes(List **, Node **, Node **);
 void mergeLists(List *, List*, List *, FILE **);
 void destroyList(List *);
-// void insertNodeAtHead();
 
 int main(int argc, char *argv[]) {
 
@@ -83,7 +82,6 @@ int main(int argc, char *argv[]) {
   sortList(&secondFileList);
 
   mergeLists(&firstFileList, &secondFileList, &thirdFileList, &fPtr3);
-  //printList(&firstFileList, 0);
 
   destroyList(&firstFileList);
   destroyList(&secondFileList);
@@ -156,9 +154,9 @@ void printList(List *list, int reverse) {
     
     while (currentNode != NULL) {
 
-      printf("WORD: %s \n COUNT: %d \n\n", currentNode->word, currentNode->count);
-
+      printf("%s,%d\n", currentNode->word, currentNode->count);
       currentNode = currentNode->next;
+
     }
 
   } else {
@@ -167,9 +165,9 @@ void printList(List *list, int reverse) {
     
     while (currentNode != NULL) {
 
-      printf("WORD: %s \n COUNT: %d \n\n", currentNode->word, currentNode->count);
-
+      printf("%s,%d\n", currentNode->word, currentNode->count);
       currentNode = currentNode->prev;
+
     }
 
   }
@@ -179,29 +177,36 @@ void printList(List *list, int reverse) {
 void swapAdjNodes(List **unsortedList, Node **nodeOne, Node **nodeTwo) {
 
   Node *tempNode = NULL;
-
   tempNode = (*nodeOne)->prev;
 
   if(tempNode != NULL) {
+
     tempNode->next = (*nodeTwo);
     (*nodeTwo)->prev = tempNode;
     (*nodeOne)->next = (*nodeTwo)->next;
     (*nodeTwo)->next = (*nodeOne);
+
   } else {
+
     (*nodeTwo)->prev = tempNode;
     (*nodeOne)->next = (*nodeTwo)->next;
     (*nodeTwo)->next = (*nodeOne);
     (*unsortedList)->head = (*nodeTwo);
+
   }
 
   tempNode = (*nodeOne)->next;
 
   if(tempNode != NULL) {
+
     tempNode->prev = (*nodeOne);
     (*nodeOne)->prev = (*nodeTwo);
+
   } else {
+
     (*nodeOne)->prev = (*nodeTwo);
     (*unsortedList)->tail = (*nodeOne);
+
   }
 
 }
@@ -219,6 +224,7 @@ void sortList(List *unsortedList) {
   while(marker != NULL && markerPrev != NULL) {
 
     if (strcmp(markerPrev->word, marker->word) < 0) {
+
       marker = marker->next;
       markerPrev = markerPrev->next;
 
@@ -238,30 +244,36 @@ void sortList(List *unsortedList) {
 
       if (marker != NULL)
         markerPrev = marker->prev;
+
     }
   }
 
 }
 
 void destroyList(List *listToDestroy) {
+
   Node *nodeToDestroy = NULL;
   Node *tempNode = NULL;
 
   nodeToDestroy = listToDestroy->head;
     
     while (nodeToDestroy != NULL) {
+
       tempNode = nodeToDestroy->next;
 
       free(nodeToDestroy->word);
       free(nodeToDestroy);
 
       nodeToDestroy = tempNode;
+
     }
 }
 
 void mergeLists(List *sortedListOne, List *sortedListTwo, List *sortedListThree, FILE **fPtr3) {
+ 
   Node *listOneNode = NULL;
   Node *listTwoNode = NULL;
+  Node *sortedListThree = NULL;
 
   listOneNode = sortedListOne->head;
   listTwoNode = sortedListTwo->head;
@@ -274,17 +286,23 @@ void mergeLists(List *sortedListOne, List *sortedListTwo, List *sortedListThree,
       totalCount = listOneNode->count + listTwoNode->count;
       fprintf((*fPtr3), "%s,%d\n", listOneNode->word, totalCount);
 
+      if(sortedListThree->head == NULL)
+        sortedListThree->head = listOneNode;
+    
+      if(listOneNode->next == NULL && listTwoNode->next == NULL)
+        sortedListThree->tail = listOneNode;
+
+      insertNodeAtTail(&sortedListThree, &listOneNode->word);
+
       listOneNode = listOneNode->next;
       listTwoNode = listTwoNode->next;
 
     } else if (strcmp(listOneNode->word, listTwoNode->word) < 0) {
 
-      fprintf((*fPtr3), "%s,%d\n", listOneNode->word, listOneNode->count);
       listOneNode = listOneNode->next;
 
     } else {
 
-      fprintf((*fPtr3), "%s,%d\n", listTwoNode->word, listTwoNode->count);
       listTwoNode = listTwoNode->next;
 
     }
