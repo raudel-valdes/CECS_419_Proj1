@@ -4,7 +4,6 @@
 #include <string.h>
 
 
-
 typedef struct Node{
   char *word;
   int count;
@@ -21,10 +20,12 @@ void insertNodeAtTail(List *, char **);
 void printList(List *, int);
 void sortList(List *);
 void swapAdjNodes(List **, Node **, Node **);
+void mergeLists(List *, List*, List *, FILE **);
 void destroyList(List *);
 // void insertNodeAtHead();
 
 int main(int argc, char *argv[]) {
+
   if (argc != 4) {
     printf("Please include the two input text file names and the output file name at execution time! \n");
     exit(EXIT_FAILURE);
@@ -32,6 +33,7 @@ int main(int argc, char *argv[]) {
 
   List firstFileList;
   List secondFileList;
+  List thirdFileList;
 
   firstFileList.head = NULL;
   firstFileList.tail = NULL;
@@ -39,22 +41,33 @@ int main(int argc, char *argv[]) {
   secondFileList.head = NULL;
   secondFileList.tail = NULL;
 
+  firstFileList.head = NULL;
+  secondFileList.tail = NULL;
+
   FILE *fPtr1;
   FILE *fPtr2;
-  // FILE *fPtr3;
+  FILE *fPtr3;
+
   char *scannedWord = NULL;
   
   fPtr1 = fopen(argv[1], "r");
 
-  if (fPtr1 == NULL) {
+  if(fPtr1 == NULL) {
     printf("The file %s was not found or could not be open. Please try again!", argv[1]);
     exit(EXIT_FAILURE);
   }
 
   fPtr2 = fopen(argv[2], "r");
 
-  if (fPtr2 == NULL) {
+  if(fPtr2 == NULL) {
     printf("The file %s was not found or could not be open. Please try again!", argv[2]);
+    exit(EXIT_FAILURE);
+  }
+
+  fPtr3 = fopen(argv[3], "w+");
+
+  if(fPtr3 == NULL) {
+    printf("The file %s was not created or could not be open. Please try again!", argv[3]);
     exit(EXIT_FAILURE);
   }
 
@@ -67,6 +80,9 @@ int main(int argc, char *argv[]) {
   }
   
   sortList(&firstFileList);
+  sortList(&secondFileList);
+
+  mergeLists(&firstFileList, &secondFileList, &thirdFileList, &fPtr3);
   //printList(&firstFileList, 0);
 
   destroyList(&firstFileList);
@@ -75,7 +91,7 @@ int main(int argc, char *argv[]) {
 
   fclose(fPtr1);
   fclose(fPtr2);
-  //fclose(fPtr3);
+  fclose(fPtr3);
 
   return 0;
 }
@@ -241,4 +257,36 @@ void destroyList(List *listToDestroy) {
 
       nodeToDestroy = tempNode;
     }
+}
+
+void mergeLists(List *sortedListOne, List *sortedListTwo, List *sortedListThree, FILE **fPtr3) {
+  Node *listOneNode = NULL;
+  Node *listTwoNode = NULL;
+
+  listOneNode = sortedListOne->head;
+  listTwoNode = sortedListTwo->head;
+  int totalCount = 0;
+
+  while (listOneNode != NULL && listTwoNode != NULL) {
+
+    if(strcmp(listOneNode->word, listTwoNode->word) == 0) {
+
+      totalCount = listOneNode->count + listTwoNode->count;
+      fprintf((*fPtr3), "%s,%d\n", listOneNode->word, totalCount);
+
+      listOneNode = listOneNode->next;
+      listTwoNode = listTwoNode->next;
+
+    } else if (strcmp(listOneNode->word, listTwoNode->word) < 0) {
+
+      fprintf((*fPtr3), "%s,%d\n", listOneNode->word, listOneNode->count);
+      listOneNode = listOneNode->next;
+
+    } else {
+
+      fprintf((*fPtr3), "%s,%d\n", listTwoNode->word, listTwoNode->count);
+      listTwoNode = listTwoNode->next;
+
+    }
+  }
 }
