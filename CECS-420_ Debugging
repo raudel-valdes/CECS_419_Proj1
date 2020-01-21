@@ -1,0 +1,11 @@
+display positionTracker->word
+display positionTracker->next->word
+display positionTracker->next->next->word
+display positionTracker->next->next->next->word
+display positionTracker->next->next->next->next->word
+
+display currentNode->word
+display currentNode->next->word
+display currentNode->next->next->word
+display currentNode->next->next->next->word
+display currentNode->next->next->next->next->word
